@@ -78,6 +78,7 @@ customtkinter.set_default_color_theme("blue")
 - When importing folders, make sure the structure is consistent:
   - Folder names like `Day1 [Python Basics]` or just `Day1`
   - Inside, files like `1.1.py`, `1-1.py`, etc.
+  - Also, inside Day Folders there should be a folder named `Screenshots` with files like `1.1.png`
 
 ---
 
