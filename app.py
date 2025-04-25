@@ -416,7 +416,14 @@ def generate_pdf_report(report_data, progress_bar, app, save_path):
                     y_position -= (reportlab_img.drawHeight + 0.5 * inch)  # Increased space after image (0.5 inch)
                     
                     # Add extra blank space after image
-                    draw_paragraph("", leading=24)  # Additional 24 points space
+                    draw_paragraph("", leading=12)
+
+                    # Add a task separator line (thinner than level separator)
+                    if j < len(level['tasks']) - 1:  # Don't add after last task in level
+                        c.setLineWidth(0.5)  # Thin line
+                        c.setStrokeColorRGB(0.7, 0.7, 0.7)  # Light gray
+                        c.line(inch * 1.5, y_position - 6, letter[0] - inch * 1.5, y_position - 6)
+                        y_position -= 24  # Space after line
 
                 except Exception as e:
                     draw_paragraph(f"Error embedding image: {e}")
@@ -431,9 +438,17 @@ def generate_pdf_report(report_data, progress_bar, app, save_path):
                     c.showPage()
                     y_position = letter[1] - inch
                 
-                # Visual separator line between levels
+                # Visual separator line between levels - more elaborate
+                c.setLineWidth(2.0)  # Thicker line
+                c.setStrokeColorRGB(0.2, 0.5, 0.8)  # Blue color
                 c.line(inch, y_position, letter[0] - inch, y_position)
-                y_position -= 0.2 * inch  # Space after line
+
+                # Add decorative elements to the line
+                c.setFillColorRGB(0.2, 0.5, 0.8)  # Blue color
+                c.circle(inch, y_position, 5, fill=1)  # Left circle
+                c.circle(letter[0] - inch, y_position, 5, fill=1)  # Right circle
+
+                y_position -= 0.25 * inch  # Space after line
                 
                 # Optional: Add "Next Level" text
                 draw_paragraph("→ Next Level →", 
@@ -658,6 +673,34 @@ class App(customtkinter.CTk):
                     task.task_entry.insert(0, task_question)
                     task.solution_entry.insert(0, py_file)
                     task.set_folder_path(full_path)
+
+                    # Look for matching screenshots
+                    screenshots_dir = os.path.join(full_path, "Screenshots")
+                    if os.path.exists(screenshots_dir):
+                        # Extract task number from filename (e.g., "1.1.py" -> "1.1")
+                        file_prefix = os.path.splitext(py_file)[0]
+                        # Check for image files with matching prefix
+                        for img_ext in ['.png', '.jpg', '.jpeg']:
+                            img_path = os.path.join(screenshots_dir, file_prefix + img_ext)
+                            if os.path.exists(img_path):
+                                task.image_path = img_path
+                                task.display_image_preview(img_path)
+                                break
+
+                    # Look for matching screenshots
+                    screenshots_dir = os.path.join(full_path, "Screenshots")
+                    if os.path.exists(screenshots_dir):
+                        file_prefix = os.path.splitext(py_file)[0]
+
+                        for img_ext in ['.png', '.jpg', '.jpeg']:
+                            img_path = os.path.join(screenshots_dir, file_prefix + img_ext)
+                            if os.path.exists(img_path):
+                                task.image_path = img_path
+                                task.display_image_preview(img_path)
+                                break
+
+
+                    
 
                 if new_level.task_entries:
                     first_task = new_level.task_entries[0]
