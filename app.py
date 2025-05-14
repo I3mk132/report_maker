@@ -355,7 +355,7 @@ def generate_pdf_report(report_data, progress_bar, app, save_path):
         if report_data.get('user_name') or report_data.get('user_role'):
             user_info = []
             if report_data.get('user_name'):
-                user_info.append(f"<b>Name:</b> {report_data['user_name']}")
+                user_info.append(f"<b>Name :</b> {report_data['user_name']}")
             if report_data.get('user_role'):
                 user_info.append(f"<b>Role:</b> {report_data['user_role']}")
             
@@ -366,7 +366,6 @@ def generate_pdf_report(report_data, progress_bar, app, save_path):
                 leading=14,
                 spaceAfter=12
             )
-            draw_paragraph("<br/>".join(user_info), user_style)
         
         # Draw main header
         draw_paragraph(f"Skill {report_data['skill_name']} Report", header_style, leading=14)
@@ -440,27 +439,28 @@ def generate_pdf_report(report_data, progress_bar, app, save_path):
                 
                 # Visual separator line between levels - more elaborate
                 c.setLineWidth(2.0)  # Thicker line
-                c.setStrokeColorRGB(0.2, 0.5, 0.8)  # Blue color
+                c.setStrokeColorRGB(0.7, 0.7, 0.7)  # Blue color
                 c.line(inch, y_position, letter[0] - inch, y_position)
 
-                # Add decorative elements to the line
-                c.setFillColorRGB(0.2, 0.5, 0.8)  # Blue color
-                c.circle(inch, y_position, 5, fill=1)  # Left circle
-                c.circle(letter[0] - inch, y_position, 5, fill=1)  # Right circle
+                # # Add decorative elements to the line
+                # c.setFillColorRGB(0.2, 0.5, 0.8)  # Blue color
+                # c.circle(inch, y_position, 5, fill=1)  # Left circle
+                # c.circle(letter[0] - inch, y_position, 5, fill=1)  # Right circle
 
                 y_position -= 0.25 * inch  # Space after line
                 
                 # Optional: Add "Next Level" text
                 draw_paragraph("→ Next Level →", 
-                             ParagraphStyle(
-                                 name='Separator',
-                                 parent=normal_style,
-                                 fontName='Helvetica-Bold',
-                                 fontSize=12,
-                                 textColor='#888888',
-                                 alignment=1  # Center aligned
-                             ),
-                             leading=24)
+                    ParagraphStyle(
+                        name='Separator',
+                        parent=normal_style,
+                        fontName='Helvetica-Bold',
+                        fontSize=12,
+                        textColor='#888888',
+                        alignment=1  # Center aligned
+                    ),
+                    leading=12)
+        draw_paragraph("<br/>".join(user_info), user_style)
 
         c.save()
         messagebox.showinfo("Success", f"PDF generated successfully at:\n{full_path}")
@@ -491,7 +491,7 @@ class App(customtkinter.CTk):
         self.user_info_frame.grid_columnconfigure(0, weight=1)
         self.user_info_frame.grid_columnconfigure(1, weight=1)
 
-        self.user_name_label = customtkinter.CTkLabel(self.user_info_frame, text="Your Name:", anchor="w", font=LABEL_FONT)
+        self.user_name_label = customtkinter.CTkLabel(self.user_info_frame, text="Your Name :", anchor="w", font=LABEL_FONT)
         self.user_name_label.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
         self.user_name_entry = customtkinter.CTkEntry(self.user_info_frame, placeholder_text="Your Name", font=ENTRY_FONT)
